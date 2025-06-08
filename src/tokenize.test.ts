@@ -41,4 +41,9 @@ test("tokenize", {
         const tokens = [...tokenize("Hello, world!")]
         expect(tokens, equals, ["Hello, ", "world!"])
     },
+
+    "treats Markdown special characters as space"() {
+        const tokens = [...tokenize(" *_-#>`=")]
+        expect(tokens, equals, [" *_-#>`="])
+    },
 })
