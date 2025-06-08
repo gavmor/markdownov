@@ -23,10 +23,14 @@ class Order1 implements State {
         return this
     }
 
+    // TODO: this method doesn't interact with any instance variables.
+    // Move to a new Order interface?
     empty(): State {
         return new Order1()
     }
 
+    // TODO: this method doesn't interact with any instance variables.
+    // Move to a new Order interface?
     textBoundary(): typeof END[] {
         return [END]
     }
