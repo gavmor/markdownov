@@ -1,3 +1,4 @@
+import {pick} from "./random.js"
 import {tokenize} from "./tokenize.js"
 
 const EOT = ""
@@ -26,14 +27,10 @@ export class MarkovModel {
         // TODO: magic number
         for (let i = 0; i < 42; i++) {
             const last = generated.at(-1) ?? EOT
-            const next = pickRandom(this.rng, this.transitions[last], EOT)
+            const next = pick(this.rng, this.transitions[last], EOT)
             generated.push(next)
             if (next === EOT) break
         }
         return generated.join("")
     }
-}
-
-function pickRandom<T>(rng: () => number, array: T[], defaultValue: T): T {
-    return array[Math.floor(rng() * array.length)]
 }

@@ -13,3 +13,7 @@ export function seedRandom(seed: string): () => number {
         return (t >>> 0) / 4294967296
     }
 }
+
+export function pick<T>(rng: () => number, array: T[], defaultValue: T): T {
+    return array[Math.floor(rng() * array.length)]
+}
