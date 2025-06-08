@@ -3,27 +3,27 @@ import {tokenize} from "./tokenize.js"
 
 const END = ""
 
-export interface Context {
+export interface State {
     id(): string;
-    afterObserving(token: string): Context;
-    empty(): Context;
+    afterObserving(token: string): State;
+    empty(): State;
     textBoundary(): string[];
     isEndOfText(): boolean;
 }
 
-class Order1 implements Context {
+class Order1 implements State {
     token = END
 
     id(): string {
         return this.token
     }
 
-    afterObserving(token: string): Context {
+    afterObserving(token: string): State {
         this.token = token
         return this
     }
 
-    empty(): Context {
+    empty(): State {
         return new Order1()
     }
 
@@ -38,45 +38,45 @@ class Order1 implements Context {
 
 export class MarkovModel {
     private transitions: Record<string, string[]> = {}
-    private initialContext: Context
+    private initialState: State
 
     constructor(
         private rng: () => number,
-        initialContext = new Order1(),
+        initialState = new Order1(),
     ) {
-        this.initialContext = initialContext.empty()
+        this.initialState = initialState.empty()
     }
 
     train(text: string) {
-        const textBoundary = this.initialContext.textBoundary()
+        const textBoundary = this.initialState.textBoundary()
         const tokens = [
             ...textBoundary,
             ...tokenize(text),
             ...textBoundary,
         ]
-        let context = this.initialContext
+        let state = this.initialState
         for (let i = textBoundary.length; i < tokens.length; i++) {
             const token = tokens[i]
-            this.transitions[context.id()] ??= []
-            this.transitions[context.id()].push(token)
-            context = context.afterObserving(token)
+            this.transitions[state.id()] ??= []
+            this.transitions[state.id()].push(token)
+            state = state.afterObserving(token)
         }
     }
 
     generate(): string {
-        let generated = this.initialContext.textBoundary()
-        let context = this.initialContext
+        let generated = this.initialState.textBoundary()
+        let state = this.initialState
         // TODO: magic number
         for (let i = 0; i < 42; i++) {
-            const next = this.predictFrom(context)
+            const next = this.predictFrom(state)
             generated.push(next)
-            context = context.afterObserving(next)
-            if (context.isEndOfText()) break
+            state = state.afterObserving(next)
+            if (state.isEndOfText()) break
         }
         return generated.join("")
     }
 
-    private predictFrom(context: Context): string {
-        return pick(this.rng, this.transitions[context.id()] ?? [END])
+    private predictFrom(state: State): string {
+        return pick(this.rng, this.transitions[state.id()] ?? [END])
     }
 }
