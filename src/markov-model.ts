@@ -7,7 +7,7 @@ export interface State {
     id(): string;
     afterObserving(token: string): State;
     empty(): State;
-    textBoundary(): string[];
+    textBoundary(): typeof END[];
     isEndOfText(): boolean;
 }
 
@@ -27,7 +27,7 @@ class Order1 implements State {
         return new Order1()
     }
 
-    textBoundary(): string[] {
+    textBoundary(): typeof END[] {
         return [END]
     }
 
@@ -64,7 +64,7 @@ export class MarkovModel {
     }
 
     generate(): string {
-        let generated = this.initialState.textBoundary()
+        let generated: string[] = this.initialState.textBoundary()
         let state = this.initialState
         // TODO: magic number
         for (let i = 0; i < 42; i++) {
@@ -77,7 +77,7 @@ export class MarkovModel {
     }
 
     private predictFrom(state: State): string {
-        const possibilities = this.transitions[state.id()] ?? state.textBoundary()
+        const possibilities = this.transitions[state.id()] ?? [END]
         return pick(this.rng, possibilities)
     }
 }
