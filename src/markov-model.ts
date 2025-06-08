@@ -14,6 +14,7 @@ export class MarkovModel {
         // TODO: hardcoded order
         for (let i = 1; i < tokens.length; i++) {
             const token = tokens[i]
+            // TODO: hardcoded context type
             const previous = tokens[i - 1]
             this.transitions[previous] ??= []
             this.transitions[previous].push(token)
