@@ -24,12 +24,13 @@ export class MarkovModel {
 
     generate(): string {
         let generated = [EOT]
+        let last = EOT
         // TODO: magic number
         for (let i = 0; i < 42; i++) {
-            const last = generated.at(-1) ?? EOT
             const next = pick(this.rng, this.transitions[last], EOT)
             generated.push(next)
             if (next === EOT) break
+            last = next
         }
         return generated.join("")
     }
