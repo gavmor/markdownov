@@ -41,11 +41,11 @@ class Order1 implements State {
 }
 
 export class MarkovModel {
-    private transitions: Record<string, string[] | undefined> = {}
-    private initialState: State
+    private readonly transitions: Record<string, string[] | undefined> = {}
+    private readonly initialState: State
 
     constructor(
-        private rng: () => number,
+        private readonly rng: () => number,
         initialState = new Order1(),
     ) {
         this.initialState = initialState.empty()
