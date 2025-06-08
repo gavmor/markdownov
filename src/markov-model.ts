@@ -1,3 +1,4 @@
+import {equals} from "@benchristel/taste"
 import {pick} from "./random.js"
 import {tokenize} from "./tokenize.js"
 
@@ -11,7 +12,7 @@ export interface Order {
 export interface State {
     id(): string;
     afterObserving(token: string): State;
-    isEndOfText(): boolean;
+    tail(): string[];
 }
 
 class Order1 implements Order {
@@ -36,8 +37,8 @@ class Order1State implements State {
         return this
     }
 
-    isEndOfText(): boolean {
-        return this.token === END
+    tail(): string[] {
+        return [this.token]
     }
 }
 
@@ -72,7 +73,7 @@ export class MarkovModel {
             const next = this.predictFrom(state)
             generated.push(next)
             state = state.afterObserving(next)
-            if (state.isEndOfText()) break
+            if (this.isEndOfText(state)) break
         }
         return generated.join("")
     }
@@ -80,5 +81,9 @@ export class MarkovModel {
     private predictFrom(state: State): string {
         const possibilities = this.transitions[state.id()] ?? [END]
         return pick(this.rng, possibilities)
+    }
+
+    private isEndOfText(state: State): boolean {
+        return equals(state.tail(), this.order.textBoundary())
     }
 }
