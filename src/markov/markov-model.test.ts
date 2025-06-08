@@ -1,6 +1,6 @@
 import {test, expect, is} from "@benchristel/taste"
 import {MarkovModel} from "./markov-model.js"
-import {seedRandom} from "./random.js"
+import {seedRandom} from "../random.js"
 
 test("a MarkovModel", {
     "generates nothing when not trained"() {

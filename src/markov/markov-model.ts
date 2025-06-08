@@ -1,45 +1,8 @@
 import {equals} from "@benchristel/taste"
-import {pick} from "./random.js"
-import {tokenize} from "./tokenize.js"
-
-const END = ""
-
-export interface Order {
-    textBoundary(): typeof END[];
-    initialState(): State;
-}
-
-export interface State {
-    id(): string;
-    update(token: string): void;
-    tail(): string[];
-}
-
-class Order1 implements Order {
-    textBoundary(): typeof END[] {
-        return [END]
-    }
-
-    initialState(): State {
-        return new Order1State()
-    }
-}
-
-class Order1State implements State {
-    token = END
-
-    id(): string {
-        return this.token
-    }
-
-    update(token: string): void {
-        this.token = token
-    }
-
-    tail(): string[] {
-        return [this.token]
-    }
-}
+import {pick} from "../random.js"
+import {tokenize} from "../tokenize.js"
+import {State, END} from "./types.js"
+import {Order1} from "./order1.js"
 
 export class MarkovModel {
     private readonly transitions: Record<string, string[] | undefined> = {}
@@ -78,6 +41,9 @@ export class MarkovModel {
     }
 
     private predictFrom(state: State): string {
+        // TODO: the dependency on END is gross. Could State predict its own
+        // next states, given transitions? Maybe transitions should be built
+        // by Order?
         const possibilities = this.transitions[state.id()] ?? [END]
         return pick(this.rng, possibilities)
     }
