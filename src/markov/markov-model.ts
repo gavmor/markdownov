@@ -8,10 +8,11 @@ export class MarkovModel<T extends Token> {
     constructor(
         private readonly rng: () => number,
         private readonly order: Order<T>,
+        private readonly initialState: () => State<T>,
     ) {}
 
     train(tokens: Iterable<T>) {
-        let state = this.order.initialState()
+        let state = this.initialState()
         for (const token of tokens) {
             this.recordTransition(state, token)
             state.update(token)
@@ -28,7 +29,7 @@ export class MarkovModel<T extends Token> {
     }
 
     private *generateTokens(): Generator<T, void, undefined> {
-        let state = this.order.initialState()
+        let state = this.initialState()
         do {
             const next = this.predictFrom(state)
             yield next

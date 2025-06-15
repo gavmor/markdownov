@@ -1,15 +1,16 @@
 #!/usr/bin/env bun
 import * as fs from "fs/promises"
 import {MarkovModel} from "../../src/markov/markov-model"
-import {Lossy} from "../../src/markov/order/lossy"
+import {Lossy, LossyState} from "../../src/markov/order/lossy"
+import {tokenize} from "../../src/tokenize"
 
 const paths = process.argv.slice(2)
 
-const model = new MarkovModel(Math.random, new Lossy())
+const model = new MarkovModel(Math.random, new Lossy(), () => new LossyState())
 
 async function trainOn(path: string): Promise<void> {
     const text = await fs.readFile(path, "utf-8")
-    model.train(text)
+    model.train(tokenize(text))
 }
 
 Promise.all(paths.map(trainOn))
