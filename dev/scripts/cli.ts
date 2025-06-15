@@ -6,7 +6,7 @@ import {tokenize} from "../../src/tokenize"
 
 const paths = process.argv.slice(2)
 
-const model = new MarkovModel(Math.random, new Lossy(), () => new LossyState())
+const model = new MarkovModel(Math.random, () => new LossyState())
 
 async function trainOn(path: string): Promise<void> {
     const text = await fs.readFile(path, "utf-8")

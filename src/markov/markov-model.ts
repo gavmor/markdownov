@@ -7,7 +7,6 @@ export class MarkovModel<T extends Token> {
 
     constructor(
         private readonly rng: () => number,
-        private readonly order: Order<T>,
         private readonly initialState: () => State<T>,
     ) {}
 
