@@ -2,7 +2,6 @@ import {tokenize} from "../../tokenize.js"
 import {Order, State} from "../types.js"
 
 const END = ""
-const textBoundary: typeof END[] = [END, END]
 
 export class Order2 implements Order<string> {
     textBoundary(): typeof END[] {
