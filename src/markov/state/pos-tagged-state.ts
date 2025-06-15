@@ -2,7 +2,7 @@ import {equals} from "@benchristel/taste"
 import pos from "pos"
 import {Tag} from "en-pos"
 import {State} from "../types.js"
-import {repeat} from "../../arrays.js"
+import {repeat, zip} from "../../arrays.js"
 
 export class PosTaggedToken {
     constructor(
@@ -96,15 +96,6 @@ function tagWithEnPos(words: string[]): [string, string][] {
 function tagWithPos(words: string[]): [string, string][] {
     const tagger = new pos.Tagger()
     return tagger.tag(words)
-}
-
-function zip<A, B>(as: A[], bs: B[]): [A, B][] {
-    const len = Math.min(as.length, bs.length)
-    const ret: [A, B][] = new Array(len)
-    for (let i = 0; i < len; i++) {
-        ret[i] = [as[i], bs[i]]
-    }
-    return ret
 }
 
 function isWord(s: string): boolean {
