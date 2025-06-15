@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 import * as fs from "fs/promises"
 import {MarkovModel} from "../../src/markov/markov-model"
-import {Lossy} from "../../src/markov/lossy"
+import {Lossy} from "../../src/markov/order/lossy"
 
 const paths = process.argv.slice(2)
 
