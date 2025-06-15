@@ -1,12 +1,24 @@
 import {equals} from "@benchristel/taste"
+import pos from "pos"
 import {State} from "../types.js"
 import {repeat} from "../../arrays.js"
 
 export class PosTaggedToken {
-    constructor(public word: string, public tag: string) {}
+    constructor(
+        public readonly word: string,
+        private readonly _tag: string,
+    ) {}
+
+    get tag(): string {
+        return this.isSpaceOrPunctuation() ? "_" : this._tag
+    }
 
     isEnd(): boolean {
         return false
+    }
+
+    isSpaceOrPunctuation(): boolean {
+        return /^[^0-9\p{L}\p{M}]/u.test(this.word)
     }
 
     toString(): string {
@@ -24,18 +36,19 @@ export class EndToken extends PosTaggedToken {
     }
 }
 
-const order = 6
+const order = 7
 const textBoundary: PosTaggedToken[] = repeat(order, () => new EndToken())
 
 export class PosTaggedState implements State<PosTaggedToken> {
     tail = [...textBoundary]
 
     id(): string {
-        return this.tail.map((token, i) => {
-            return /^[A-Za-z0-9]/.test(token.word)
-                ? token.tag
-                : token.word
+        const id = this.tail.map((token, i) => {
+            return i >= order - 2 || token.isSpaceOrPunctuation()
+                ? token.word
+                : token.tag
         }).join(":")
+        return id
     }
 
     update(token: PosTaggedToken): void {
@@ -50,4 +63,12 @@ export class PosTaggedState implements State<PosTaggedToken> {
     terminalToken(): PosTaggedToken {
         return new EndToken()
     }
+}
+
+export function tokenizeWithPosTags(text: string): PosTaggedToken[] {
+    const tagger = new pos.Tagger()
+    const tokens = text.split(/\b/)
+    return tagger.tag(tokens).map(([word, tag]: [string, string]) =>
+        new PosTaggedToken(word, tag),
+    )
 }
