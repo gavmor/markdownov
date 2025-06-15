@@ -37,22 +37,31 @@ export class EndToken extends PosTaggedToken {
     }
 }
 
-const order = 7
+const order = 6
+const literalTokensInContext = 2
 const textBoundary: PosTaggedToken[] = repeat(order, () => new EndToken())
 
 export class PosTaggedState implements State<PosTaggedToken> {
     tail = [...textBoundary]
+    lastNonwordWithNewline = ""
 
     id(): string {
-        const id = this.tail.map((token, i) => {
-            return i >= order - 2 || token.isSpaceOrPunctuation()
-                ? token.word
-                : token.tag
-        }).join(":")
-        return id
+        return [
+            this.lastNonwordWithNewline,
+            ...this.tail.map((token, i) =>
+                i >= order - literalTokensInContext || token.isSpaceOrPunctuation()
+                    ? token.word
+                    : token.tag,
+            ),
+        ].join(":")
     }
 
     update(token: PosTaggedToken): void {
+        const newlineTrailer = token.word.match(/\n[^]*$/)?.[0]
+        if (newlineTrailer != null) {
+            this.clearContext()
+            this.lastNonwordWithNewline = newlineTrailer
+        }
         this.tail.push(token)
         this.tail.shift()
     }
@@ -63,6 +72,11 @@ export class PosTaggedState implements State<PosTaggedToken> {
 
     terminalToken(): PosTaggedToken {
         return new EndToken()
+    }
+
+    private clearContext() {
+        this.tail = [...textBoundary]
+        this.lastNonwordWithNewline = ""
     }
 }
 
