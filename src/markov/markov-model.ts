@@ -3,8 +3,6 @@ import {State, Order, Token} from "./types.js"
 import {take} from "../iterators.js"
 
 export class MarkovModel<T extends Token> {
-    // TODO: make MarkovModel generic and make the value of transitions use
-    // the token type.
     private readonly transitions: Record<string, T[] | undefined> = {}
 
     constructor(
@@ -38,7 +36,6 @@ export class MarkovModel<T extends Token> {
     }
 
     private predictFrom(state: State<T>): T {
-        // TODO: decouple from token type
         const possibilities = this.transitions[state.id()] ?? []
         return pick(this.rng, possibilities) ?? this.order.defaultToken()
     }
