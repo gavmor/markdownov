@@ -1,7 +1,7 @@
 import {equals} from "@benchristel/taste"
 import {pick} from "../random.js"
 import {State, END, Order} from "./types.js"
-import {Order1} from "./order1.js"
+import {Order1} from "./order/order1.js"
 import {take} from "../iterators.js"
 
 export class MarkovModel {

@@ -1,5 +1,5 @@
-import {tokenize} from "../tokenize.js"
-import {Order, State, END} from "./types.js"
+import {tokenize} from "../../tokenize.js"
+import {Order, State, END} from "../types.js"
 
 export class MarkdownAwareOrder2 implements Order {
     textBoundary(): typeof END[] {
