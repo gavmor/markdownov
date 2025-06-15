@@ -13,8 +13,7 @@ export class MarkovModel<T extends Token> {
     train(text: string) {
         const tokens = this.order.tokenize(text)
         let state = this.order.initialState()
-        for (let i = 0; i < tokens.length; i++) {
-            const token = tokens[i]
+        for (const token of tokens) {
             this.recordTransition(state, token)
             state.update(token)
         }
