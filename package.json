@@ -4,6 +4,9 @@
   "description": "Markdown-aware Markov model for text generation",
   "main": "dist/index.js",
   "type": "module",
+  "dependencies": {
+    "pos": "^0.4.2"
+  },
   "devDependencies": {
     "@benchristel/taste": "^0.6.0",
     "@eslint/js": "8.56.0",
@@ -17,7 +20,11 @@
     "tsd": "^0.31.2",
     "typescript": "<5.8.0"
   },
-  "keywords": ["markov", "generator", "markdown"],
+  "keywords": [
+    "markov",
+    "generator",
+    "markdown"
+  ],
   "author": "Ben Christel",
   "license": "MIT",
   "packageManager": "pnpm@9.10.0+sha1.216899f511c8dfde183c7cb50b69009c779534a8"
