@@ -10,8 +10,7 @@ export class MarkovModel<T extends Token> {
         private readonly order: Order<T>,
     ) {}
 
-    train(text: string) {
-        const tokens = this.order.tokenize(text)
+    train(tokens: Iterable<T>) {
         let state = this.order.initialState()
         for (const token of tokens) {
             this.recordTransition(state, token)
