@@ -1,15 +1,17 @@
 import {equals} from "@benchristel/taste"
 import {pick} from "../random.js"
-import {State, END, Order} from "./types.js"
+import {State, Order, Token} from "./types.js"
 import {Order1} from "./order/order1.js"
 import {take} from "../iterators.js"
 
 export class MarkovModel {
+    // TODO: make MarkovModel generic and make the value of transitions use
+    // the token type.
     private readonly transitions: Record<string, string[] | undefined> = {}
 
     constructor(
         private readonly rng: () => number,
-        private readonly order: Order = new Order1(),
+        private readonly order: Order<string> = new Order1(),
     ) {}
 
     train(text: string) {
@@ -38,15 +40,16 @@ export class MarkovModel {
         } while (!this.isEndOfText(state))
     }
 
-    private predictFrom(state: State): string {
+    private predictFrom(state: State<string>): string {
         // TODO: the dependency on END is gross. Could State predict its own
         // next states, given transitions? Maybe transitions should be built
         // by Order?
-        const possibilities = this.transitions[state.id()] ?? [END]
+        // TODO: decouple from token type
+        const possibilities = this.transitions[state.id()] ?? [""]
         return pick(this.rng, possibilities)
     }
 
-    private isEndOfText(state: State): boolean {
+    private isEndOfText(state: State<string>): boolean {
         return equals(state.tail(), this.order.textBoundary())
     }
 }

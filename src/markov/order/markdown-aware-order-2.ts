@@ -1,12 +1,14 @@
 import {tokenize} from "../../tokenize.js"
-import {Order, State, END} from "../types.js"
+import {Order, State} from "../types.js"
 
-export class MarkdownAwareOrder2 implements Order {
+const END = ""
+
+export class MarkdownAwareOrder2 implements Order<string> {
     textBoundary(): typeof END[] {
         return [END, END]
     }
 
-    initialState(): State {
+    initialState(): State<string> {
         return new MarkdownAwareOrder2State()
     }
 
@@ -19,7 +21,7 @@ export class MarkdownAwareOrder2 implements Order {
     }
 }
 
-export class MarkdownAwareOrder2State implements State {
+export class MarkdownAwareOrder2State implements State<string> {
     lastNonwordWithNewline = ""
     last = END
     lastButOne = END

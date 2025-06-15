@@ -1,12 +1,14 @@
 import {tokenize} from "../../tokenize.js"
-import {Order, State, END} from "../types.js"
+import {Order, State} from "../types.js"
 
-export class Order1 implements Order {
+const END = ""
+
+export class Order1 implements Order<string> {
     textBoundary(): typeof END[] {
         return [END]
     }
 
-    initialState(): State {
+    initialState(): State<string> {
         return new Order1State()
     }
 
@@ -19,7 +21,7 @@ export class Order1 implements Order {
     }
 }
 
-export class Order1State implements State {
+export class Order1State implements State<string> {
     token = END
 
     id(): string {

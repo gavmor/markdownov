@@ -1,12 +1,14 @@
 import {tokenize} from "../../tokenize.js"
-import {Order, State, END} from "../types.js"
+import {Order, State} from "../types.js"
 
-export class Lossy implements Order {
+const END = ""
+
+export class Lossy implements Order<string> {
     textBoundary(): typeof END[] {
         return new LossyState().tail().map(() => END)
     }
 
-    initialState(): State {
+    initialState(): State<string> {
         return new LossyState()
     }
 
@@ -23,7 +25,7 @@ export class Lossy implements Order {
     }
 }
 
-export class LossyState implements State {
+export class LossyState implements State<string> {
     lastNonwordWithNewline = ""
     _tail = [END, END, END, END, END, END, END]
     order = this._tail.length

@@ -1,13 +1,15 @@
-export const END = ""
-
-export interface Order {
-    textBoundary(): typeof END[];
-    initialState(): State;
-    tokenize(text: string): string[];
+export interface Token {
+    toString(): string;
 }
 
-export interface State {
+export interface Order<T extends Token> {
+    textBoundary(): T[];
+    initialState(): State<T>;
+    tokenize(text: string): T[];
+}
+
+export interface State<T extends Token> {
     id(): string;
-    update(token: string): void;
-    tail(): string[];
+    update(token: T): void;
+    tail(): T[];
 }
