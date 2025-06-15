@@ -1,15 +1,8 @@
 import {equals} from "@benchristel/taste"
-import {tokenize} from "../../tokenize.js"
-import {Order, State} from "../types.js"
+import {State} from "../types.js"
 
 const END = ""
 const textBoundary: typeof END[] = [END, END]
-
-export class MarkdownAwareOrder2 implements Order<string> {
-    initialState(): State<string> {
-        return new MarkdownAwareOrder2State()
-    }
-}
 
 export class MarkdownAwareOrder2State implements State<string> {
     lastNonwordWithNewline = ""

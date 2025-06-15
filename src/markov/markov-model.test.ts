@@ -1,8 +1,8 @@
 import {test, expect, is} from "@benchristel/taste"
 import {MarkovModel} from "./markov-model.js"
 import {seedRandom} from "../random.js"
-import {Order1, Order1State} from "./order/order1.js"
-import {Order2, Order2State} from "./order/order2.js"
+import {Order1State} from "./state/order1-state.js"
+import {Order2State} from "./state/order2-state.js"
 import {tokenize} from "../tokenize.js"
 
 test("a MarkovModel", {

@@ -1,19 +1,8 @@
 import {equals} from "@benchristel/taste"
-import {tokenize} from "../../tokenize.js"
-import {Order, State} from "../types.js"
+import {State} from "../types.js"
 
 const END = ""
 const textBoundary: typeof END[] = [END, END, END, END, END, END, END]
-
-export class Lossy implements Order<string> {
-    initialState(): State<string> {
-        return new LossyState()
-    }
-
-    tokenRegex(): RegExp {
-        return /^([0-9\p{L}\p{M}]+|[^0-9\p{L}\p{M}]+)/u
-    }
-}
 
 export class LossyState implements State<string> {
     private lastNonwordWithNewline = ""

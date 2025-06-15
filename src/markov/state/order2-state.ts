@@ -1,13 +1,6 @@
-import {tokenize} from "../../tokenize.js"
-import {Order, State} from "../types.js"
+import {State} from "../types.js"
 
 const END = ""
-
-export class Order2 implements Order<string> {
-    initialState(): State<string> {
-        return new Order2State()
-    }
-}
 
 export class Order2State implements State<string> {
     last = END

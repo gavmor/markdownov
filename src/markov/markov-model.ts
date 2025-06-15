@@ -1,5 +1,5 @@
 import {pick} from "../random.js"
-import {State, Order, Token} from "./types.js"
+import {State, Token} from "./types.js"
 import {take} from "../iterators.js"
 
 export class MarkovModel<T extends Token> {

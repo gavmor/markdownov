@@ -1,12 +1,12 @@
 import {test, expect, is} from "@benchristel/taste"
-import {Order} from "../types.js"
+import {State} from "../types.js"
 
 type UnknownToken = {toString(): string}
 
-export function testBehavesLikeOrder(order: Order<UnknownToken>) {
-    test(order.constructor.name, {
+export function testBehavesLikeState(TheState: new () => State<UnknownToken>) {
+    test(TheState.name, {
         "terminates given the default token"() {
-            let state = order.initialState()
+            const state = new TheState()
             state.update(state.terminalToken())
             expect(state.isTerminal(), is, true)
         },
