@@ -3,8 +3,6 @@ export interface Token {
 }
 
 export interface Order<T extends Token> {
-    // TODO: remove textBoundary
-    textBoundary(): T[];
     initialState(): State<T>;
     tokenize(text: string): T[];
     defaultToken(): T;
