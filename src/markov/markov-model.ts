@@ -13,13 +13,9 @@ export class MarkovModel<T extends Token> {
     ) {}
 
     train(text: string) {
-        // TODO: WTF. This textBoundary stuff doesn't need to be here. The
-        // tokenized text shouldn't include the initial boundary, since we just
-        // ignore those tokens.
-        const textBoundary = this.order.textBoundary()
         const tokens = this.order.tokenize(text)
         let state = this.order.initialState()
-        for (let i = textBoundary.length; i < tokens.length; i++) {
+        for (let i = 0; i < tokens.length; i++) {
             const token = tokens[i]
             // TODO: this is gross. `transitions` really needs to be an object.
             ;(this.transitions[state.id()] ??= []).push(token)

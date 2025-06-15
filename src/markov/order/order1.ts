@@ -14,7 +14,6 @@ export class Order1 implements Order<string> {
 
     tokenize(text: string): string[] {
         return [
-            ...this.textBoundary(),
             ...tokenize(text),
             ...this.textBoundary(),
         ]

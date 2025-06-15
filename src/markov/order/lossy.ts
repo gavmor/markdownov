@@ -16,7 +16,6 @@ export class Lossy implements Order<string> {
 
     tokenize(text: string): string[] {
         return [
-            ...this.textBoundary(),
             ...tokenize(text, this.tokenRegex()),
             ...this.textBoundary(),
         ]

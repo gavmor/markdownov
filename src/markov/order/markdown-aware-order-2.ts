@@ -16,7 +16,6 @@ export class MarkdownAwareOrder2 implements Order<string> {
 
     tokenize(text: string): string[] {
         return [
-            ...textBoundary,
             ...tokenize(text),
             ...textBoundary,
         ]
