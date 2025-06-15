@@ -38,4 +38,8 @@ export class Order1State implements State<string> {
     isTerminal(): boolean {
         return this.token === END
     }
+
+    terminalToken(): string {
+        return END
+    }
 }

@@ -5,11 +5,11 @@ export interface Token {
 export interface Order<T extends Token> {
     initialState(): State<T>;
     tokenize(text: string): T[];
-    defaultToken(): T;
 }
 
 export interface State<T extends Token> {
     id(): string;
     update(token: T): void;
     isTerminal(): boolean;
+    terminalToken(): T;
 }

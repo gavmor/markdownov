@@ -62,6 +62,10 @@ export class LossyState implements State<string> {
         return equals(this.tail, textBoundary)
     }
 
+    terminalToken(): string {
+        return END
+    }
+
     private efface(token: string): string {
         return token.match(/^\w/)
             ? token[token.length - 1]

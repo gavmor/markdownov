@@ -55,4 +55,8 @@ export class MarkdownAwareOrder2State implements State<string> {
     isTerminal(): boolean {
         return equals([this.lastButOne, this.last], textBoundary)
     }
+
+    terminalToken(): string {
+        return END
+    }
 }

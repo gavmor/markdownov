@@ -44,4 +44,8 @@ export class Order2State implements State<string> {
     isTerminal(): boolean {
         return this.lastButOne === END && this.last === END
     }
+
+    terminalToken(): string {
+        return END
+    }
 }

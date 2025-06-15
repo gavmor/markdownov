@@ -7,7 +7,7 @@ export function testBehavesLikeOrder(order: Order<UnknownToken>) {
     test(order.constructor.name, {
         "terminates given the default token"() {
             let state = order.initialState()
-            state.update(order.defaultToken())
+            state.update(state.terminalToken())
             expect(state.isTerminal(), is, true)
         },
     })

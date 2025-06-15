@@ -34,7 +34,7 @@ export class MarkovModel<T extends Token> {
 
     private predictFrom(state: State<T>): T {
         return pick(this.rng, this.possibilities(state))
-            ?? this.order.defaultToken()
+            ?? state.terminalToken()
     }
 
     private recordTransition(from: State<T>, to: T): void {
