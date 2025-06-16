@@ -67,3 +67,10 @@ make         # same as `make right`
 The [Husky](https://typicode.github.io/husky/) git hook framework will run
 `make right` automatically when you try to commit changes. To bypass this
 check, use `git commit -n` or `git commit --no-verify`.
+
+### Releasing
+
+```sh
+make release
+make publish
+```
