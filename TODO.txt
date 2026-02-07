@@ -1,0 +1,3 @@
+# TODO: save/load
+# TODO: extract a Transitions class
+# TODO: enable Transitions to somehow pick the next token given a state it has never seen before.
