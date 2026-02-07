@@ -2,6 +2,15 @@ import {test, expect, equals} from "@benchristel/taste"
 import {DelimiterStack} from "./delimiter-stack.js"
 import {tokenizeWithPosTags} from "./pos-tagged-state.js"
 
+function expectStackAfter(input: string, expected: string[]) {
+    const tokens = tokenizeWithPosTags(input)
+    const stack = new DelimiterStack()
+    for (const token of tokens) {
+        stack.process(token.toString())
+    }
+    expect(stack.getDelimiters(), equals, expected)
+}
+
 test("DelimiterStack", {
     "starts empty"() {
         const delimiters = new DelimiterStack().getDelimiters()
@@ -9,242 +18,146 @@ test("DelimiterStack", {
     },
 
     "pushes a paren"() {
-        const stack = new DelimiterStack()
-        stack.process("(")
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, ["("])
+        expectStackAfter("(", ["("])
     },
 
     "pops a paren"() {
-        const stack = new DelimiterStack()
-        stack.process("(")
-        stack.process(")")
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, [])
+        expectStackAfter("()", [])
     },
 
-    "processes matched delimiters within one token"() {
+    "pairs delimiters within one token"() {
         const stack = new DelimiterStack()
         stack.process("()(())")
         const delimiters = stack.getDelimiters()
         expect(delimiters, equals, [])
     },
 
-    "processes unmatched delimiters within one token"() {
-        const stack = new DelimiterStack()
-        stack.process("{()[")
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, ["{", "["])
+    "stacks unmatched delimiters within one token"() {
+        expectStackAfter("{()[", ["{", "["])
     },
 
     "pops in the presence of unmatched delimiters"() {
-        const stack = new DelimiterStack()
-        stack.process("(")
-        stack.process("[")
-        stack.process(")")
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, [])
+        expectStackAfter("( a [ b )", [])
     },
 
     "only pops until it finds a matching opening delimiter"() {
-        const stack = new DelimiterStack()
-        stack.process("(")
-        stack.process("[")
-        stack.process("]")
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, ["("])
+        expectStackAfter("( a [ b ]", ["("])
     },
 
     "ignores an unrecognized symbol"() {
-        const stack = new DelimiterStack()
-        stack.process("%")
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, [])
+        expectStackAfter("%", [])
     },
 
-    "handles matched quotes with surrounding space"() {
-        const stack = new DelimiterStack()
-        stack.process(` "`)
-        stack.process("hello")
-        stack.process(`" `)
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, [])
+    "stacks unmatched quotes"() {
+        expectStackAfter(`"hello`, [`"`])
     },
 
-    "handles matched quotes without initial space"() {
-        const stack = new DelimiterStack()
-        stack.process(`"`)
-        stack.process("hello")
-        stack.process(`!" `)
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, [])
+    "pairs quotes surrounded by space"() {
+        expectStackAfter(` "hello" `, [])
     },
 
-    "handles unmatched quotes"() {
-        const stack = new DelimiterStack()
-        stack.process(`"hello`)
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, ['"'])
+    "pairs quotes without initial space"() {
+        expectStackAfter(`"hello!" `, [])
     },
 
-    "handles matched curly quotes"() {
-        const stack = new DelimiterStack()
-        stack.process(`“a”`)
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, [])
+    "pairs quotes without trailing space"() {
+        expectStackAfter(` "hello"`, [])
     },
 
-    "handles an unmatched open curly quote"() {
-        const stack = new DelimiterStack()
-        stack.process(`“a`)
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, [`“`])
+    "pairs curly quotes"() {
+        expectStackAfter(`“a”`, [])
+    },
+
+    "stacks an unmatched open curly quote"() {
+        expectStackAfter(`“a`, [`“`])
     },
 
     "ignores an unmatched closing curly quote"() {
-        const stack = new DelimiterStack()
-        stack.process(`a”`)
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, [])
+        expectStackAfter(`a”`, [])
     },
 
     "handles markdown emphasis"() {
-        const stack = new DelimiterStack()
-        stack.process("_hello_ ")
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, [])
+        expectStackAfter("_hello_ ", [])
     },
 
-    "handles unmatched markdown emphasis"() {
-        const stack = new DelimiterStack()
-        stack.process("_hello")
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, ["_"])
+    "stacks unmatched markdown emphasis"() {
+        expectStackAfter("_hello", ["_"])
     },
 
     "handles markdown strong text"() {
-        const stack = new DelimiterStack()
-        stack.process("**Hello**, world!")
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, [])
+        expectStackAfter("**Hello**, world!", [])
     },
 
     "handles unmatched markdown strong text"() {
-        const stack = new DelimiterStack()
-        stack.process("**Hello")
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, ["**"])
+        expectStackAfter("**Hello", ["**"])
     },
 
     "closes strong text followed by colon"() {
-        const stack = new DelimiterStack()
-        stack.process("**Hello**:")
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, [])
+        expectStackAfter("**Hello**:", [])
+    },
+
+    "closes strong text around colon"() {
+        expectStackAfter("**Hello:**", [])
     },
 
     "closes strong text followed by period"() {
-        const stack = new DelimiterStack()
-        stack.process("**Hello**.")
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, [])
+        expectStackAfter("**Hello**.", [])
     },
 
     "closes strong text followed by comma"() {
-        const stack = new DelimiterStack()
-        stack.process("**Hello**,")
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, [])
+        expectStackAfter("**Hello**,", [])
     },
 
     "closes strong text followed by bang"() {
-        const stack = new DelimiterStack()
-        stack.process("**Hello**!")
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, [])
+        expectStackAfter("**Hello**!", [])
     },
 
     "closes strong text followed by question mark"() {
-        const stack = new DelimiterStack()
-        stack.process("**Hello**?|")
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, [])
+        expectStackAfter("**Hello**?", [])
     },
 
     "handles a complete markdown code block"() {
-        const stack = new DelimiterStack()
-        stack.process("```\nhello\n```")
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, [])
+        expectStackAfter("```\nhello\n```", [])
     },
 
     "handles a markdown code block with a language tag"() {
-        const stack = new DelimiterStack()
-        stack.process("```bash\necho hi\n```")
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, [])
+        expectStackAfter("```bash\necho hi\n```", [])
     },
 
-    "keeps track of an unterminated code block"() {
-        const stack = new DelimiterStack()
-        stack.process("\n```\n    hello\n")
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, ["```"])
+    "stacks an unterminated code block"() {
+        expectStackAfter("\n```\n    hello\n", ["```"])
     },
 
-    "keeps track of an unterminated code block with a language tag"() {
-        const stack = new DelimiterStack()
-        stack.process("```bash\necho hi\n")
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, ["```"])
+    "stacks an unterminated code block with a language tag"() {
+        expectStackAfter("```bash\necho hi\n", ["```"])
     },
 
     "ignores closing delimiters escaped by code blocks"() {
-        const stack = new DelimiterStack()
-        stack.process("**a\n```**")
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, ["**", "```", "**"])
+        expectStackAfter("**a\n```**", ["**", "```", "**"])
     },
 
-    "keeps track of unterminated inline code"() {
-        const stack = new DelimiterStack()
-        stack.process("`")
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, ["`"])
+    "stacks unterminated inline code"() {
+        expectStackAfter("`", ["`"])
     },
 
     "closes inline code blocks"() {
-        const stack = new DelimiterStack()
-        stack.process("`a`")
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, [])
+        expectStackAfter("`a`", [])
     },
 
     "ignores markdown syntax in code blocks"() {
-        const stack = new DelimiterStack()
-        stack.process("`**`")
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, [])
+        expectStackAfter("` **a`", [])
     },
 
     "processes a Markdown image tag"() {
-        const stack = new DelimiterStack()
-        stack.process(`![this alt text says "hi"](https://example.com)`)
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, [])
+        expectStackAfter(`![this alt text says "hi"](https://example.com)`, [])
     },
 
     "in the middle of a Markdown image tag"() {
-        const stack = new DelimiterStack()
-        stack.process(`![this alt text says "hi"](https://`)
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, ["("])
+        expectStackAfter(`![this alt text says "hi"](https://`, ["("])
     },
 
-    "given repeated intra-word emphasis"() {
-        const stack = new DelimiterStack()
-        stack.process(`here_is_some_snake_case_!`)
-        const delimiters = stack.getDelimiters()
-        expect(delimiters, equals, [])
-    },
+    // TODO:
+    // "treats snake case as literal, not intra-word emphasis"() {
+    //     expectStackAfter(`snake_case!`, [])
+    // },
 })
