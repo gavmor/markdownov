@@ -5,12 +5,14 @@ import {take} from "../iterators.js"
 class Transitions<TokenT extends Token> {
     private readonly storage: Record<string, TokenT[] | undefined> = {}
 
+    constructor(private readonly rng: () => number) { }
+
     record(from: string, to: TokenT): void {
         (this.storage[from] ??= []).push(to)
     }
 
-    pick(rng: () => number, stateId: string): TokenT | undefined {
-        return pick(rng, this.storage[stateId] ?? [])
+    pick(stateId: string): TokenT | undefined {
+        return pick(this.rng, this.storage[stateId] ?? [])
     }
 
     possibilities(stateId: string): TokenT[] {
@@ -19,12 +21,15 @@ class Transitions<TokenT extends Token> {
 }
 
 export class MarkovModel<TokenT extends Token> {
-    private readonly transitions = new Transitions<TokenT>()
+    private readonly transitions: Transitions<TokenT>
 
     constructor(
+        // TODO: remove unused rng param
         private readonly rng: () => number,
         private readonly initialState: () => State<TokenT>,
-    ) {}
+    ) {
+        this.transitions = new Transitions<TokenT>(rng)
+    }
 
     train(tokens: Iterable<TokenT>) {
         let state = this.initialState()
@@ -53,8 +58,7 @@ export class MarkovModel<TokenT extends Token> {
     }
 
     private predictFrom(state: State<TokenT>): TokenT {
-        // TODO: pass this.rng to transitions via constructor injection
-        return this.transitions.pick(this.rng, state.id())
+        return this.transitions.pick(state.id())
             ?? state.terminalToken()
     }
 
