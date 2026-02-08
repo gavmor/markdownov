@@ -24,8 +24,7 @@ export class MarkovModel<TokenT extends Token> {
     private readonly transitions: Transitions<TokenT>
 
     constructor(
-        // TODO: remove unused rng param
-        private readonly rng: () => number,
+        rng: () => number,
         private readonly initialState: () => State<TokenT>,
     ) {
         this.transitions = new Transitions<TokenT>(rng)
