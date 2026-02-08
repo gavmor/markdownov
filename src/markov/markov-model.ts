@@ -7,12 +7,12 @@ class Transitions<TokenT extends Token> {
 
     constructor(private readonly rng: () => number) { }
 
-    record(from: string, to: TokenT): void {
-        (this.storage[from] ??= []).push(to)
+    record(from: State<TokenT>, to: TokenT): void {
+        (this.storage[from.id()] ??= []).push(to)
     }
 
-    pick(stateId: string): TokenT | undefined {
-        return pick(this.rng, this.storage[stateId] ?? [])
+    pick(state: State<TokenT>): TokenT {
+        return pick(this.rng, this.storage[state.id()] ?? []) ?? state.terminalToken()
     }
 
     possibilities(stateId: string): TokenT[] {
@@ -57,11 +57,10 @@ export class MarkovModel<TokenT extends Token> {
     }
 
     private predictFrom(state: State<TokenT>): TokenT {
-        return this.transitions.pick(state.id())
-            ?? state.terminalToken()
+        return this.transitions.pick(state)
     }
 
     private recordTransition(from: State<TokenT>, to: TokenT): void {
-        this.transitions.record(from.id(), to)
+        this.transitions.record(from, to)
     }
 }
