@@ -1,6 +1,5 @@
 import {equals} from "@benchristel/taste"
 import pos from "pos"
-import {Tag} from "en-pos"
 import {State} from "../types.js"
 import {repeat, zip} from "../../arrays.js"
 import {DelimiterStack} from "./delimiter-stack.js"
@@ -103,12 +102,6 @@ export function tokenizeWithPosTags(text: string): PosTaggedToken[] {
         ret.push(new PosTaggedToken(token, "_"))
     }
     return ret
-}
-
-// TODO: Dead code
-function tagWithEnPos(words: string[]): [string, string][] {
-    const result = new Tag(words).initial().smooth()
-    return zip(result.tokens, result.tags)
 }
 
 function tagWithPos(words: string[]): [string, string][] {
