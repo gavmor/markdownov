@@ -101,7 +101,10 @@ const styleRules = {
 }
 export default [
     {
-        rules: styleRules,
+        rules: {
+            ...styleRules,
+            "no-useless-escape": "error",
+        },
         files,
         languageOptions: {parser: parserTs},
         plugins: {

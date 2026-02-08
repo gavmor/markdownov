@@ -29,10 +29,10 @@ export class DelimiterStack {
     }
 }
 
-const delimiterRegex = /[\(\)\[\]\{\}“”]|(\s|^)(["_]|\*\*)|(["_]|\*\*)([\s,:.!?]|$)|```|`/g
+const delimiterRegex = /[()[\]{}“”]|(\s|^)(["_]|\*\*)|(["_]|\*\*)([\s,:.!?]|$)|```|`/g
 
 function couldBeOpening(delimiter: string): boolean {
-    return /\(|\{|\[|“|(["\*_]|\*\*)$|```|`/.test(delimiter)
+    return /\(|{|\[|“|(["*_]|\*\*)$|```|`/.test(delimiter)
 }
 
 function isOpeningMatchFor(closing: string, opening: string): boolean {

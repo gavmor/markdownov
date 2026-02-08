@@ -116,4 +116,4 @@ function isWord(s: string): boolean {
     return s.length > 0 && !punctuation.test(s)
 }
 
-const punctuation = /([\s\.,;:'"<>/?!@#$%^&*\(\)\-+=|\\\[\]{}`~]+|(?<!\w)_|_(?!\w))/
+const punctuation = /([\s.,;:'"<>/?!@#$%^&*()\-+=|\\[\]{}`~]+|(?<!\w)_|_(?!\w))/
