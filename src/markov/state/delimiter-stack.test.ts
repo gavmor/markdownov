@@ -163,4 +163,8 @@ test("DelimiterStack", {
     "treats snake case as literal, not intra-word emphasis"() {
         expectStackAfter(`snake_case!`, [])
     },
+
+    "treats longer snake case as literal"() {
+        expectStackAfter(`one_two_three_four`, [])
+    },
 })

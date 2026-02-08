@@ -1,10 +1,8 @@
 # TODO: save/load
 # TODO: extract a Transitions class
 # TODO: enable Transitions to somehow pick the next token given a state it has never seen before.
-# TODO: update eslint rule for escaped character class delineations in regexes.
 # TODO: discourage lookbehind in styleguide. Reasoning: "We don't want look-behind in general. For one thing, it's not cross-platform. For another       
    thing, it can have weird performance issues, and it just complicates one's mental model of      
    how the regex is evaluated."
 # TODO: enable recommended eslint rules for js
 # TODO: refactor regexes using String.raw and new RegExp() to be more readable
-# TODO: add a test for snake case with more than 2 words, e.g. one_two_three
