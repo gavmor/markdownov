@@ -5,7 +5,7 @@ import {testBehavesLikeState} from "./state-contract-tests.js"
 testBehavesLikeState(PosTaggedState)
 
 test("PosTaggedState", {
-    "includes POS tags in id"() {
+    "includes POS tags in value"() {
         const state = new PosTaggedState()
         state.update(new PosTaggedToken("the", "DET"))
         state.update(new PosTaggedToken("bear", "N"))
@@ -13,13 +13,13 @@ test("PosTaggedState", {
         state.update(new PosTaggedToken("not", "NEG"))
         state.update(new PosTaggedToken("order", "V"))
         state.update(new PosTaggedToken("beer", "N"))
-        expect(state.id(), endsWith, "DET:N:VPST:NEG:order:beer")
+        expect(state.value(), endsWith, "DET:N:VPST:NEG:order:beer")
     },
 
     "does not use POS tags for punctuation"() {
         const state = new PosTaggedState()
         state.update(new PosTaggedToken(",", "PUNCT"))
-        expect(state.id(), endsWith, ":,")
+        expect(state.value(), endsWith, ":,")
     },
 })
 

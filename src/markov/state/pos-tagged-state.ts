@@ -50,7 +50,7 @@ export class PosTaggedState implements State<PosTaggedToken> {
     private lastNonwordWithNewline = ""
     private delimiterStack = new DelimiterStack()
 
-    id(): string {
+    value(): string {
         const unmatchedDelims = this.delimiterStack.getDelimiters()
         const id = [
             unmatchedDelims.join(","),

@@ -3,7 +3,7 @@ export interface Token {
 }
 
 export interface State<T extends Token> {
-    id(): string;
+    value(): string;
     update(token: T): void;
     isTerminal(): boolean;
     terminalToken(): T;

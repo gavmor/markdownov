@@ -6,7 +6,7 @@ export class Order2State implements State<string> {
     last = END
     lastButOne = END
 
-    id(): string {
+    value(): string {
         return this.tail().join("")
     }
 
